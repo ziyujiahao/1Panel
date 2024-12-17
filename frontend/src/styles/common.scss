@@ -182,7 +182,7 @@ html {
 
 .mask-prompt {
     position: absolute;
-    z-index: 9998;
+    z-index: 1;
     top: 220px;
     left: 45%;
     transform: translate(-50%, -50%);
@@ -407,6 +407,10 @@ html {
     width: 200px !important;
 }
 
+.p-w-250 {
+    width: 250px !important;
+}
+
 .p-w-100 {
     width: 100px !important;
 }
@@ -429,6 +433,12 @@ html {
 
 .el-tag {
     cursor: pointer;
+}
+
+.dialog-footer{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .monaco-editor-tree-light .el-tree-node__content:hover {

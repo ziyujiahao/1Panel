@@ -17,6 +17,7 @@
                     v-model:mask-show="maskShow"
                     @setting="onSetting"
                     @is-exist="checkExist"
+                    ref="appStatusRef"
                 ></AppStatus>
             </template>
             <template #leftToolBar>
@@ -44,7 +45,7 @@
                 <el-button @click="goDashboard()" type="primary" plain>PGAdmin4</el-button>
             </template>
             <template #rightToolBar>
-                <el-select v-model="currentDBName" @change="changeDatabase()" class="p-w-200 mr-2.5" v-if="currentDB">
+                <el-select v-model="currentDBName" @change="changeDatabase()" class="p-w-250" v-if="currentDB">
                     <template #prefix>{{ $t('commons.table.type') }}</template>
                     <el-option-group :label="$t('database.local')">
                         <div v-for="(item, index) in dbOptionsLocal" :key="index">
@@ -281,6 +282,8 @@ const dashboardName = ref();
 const dashboardKey = ref();
 const dashboardVisible = ref(false);
 
+const appStatusRef = ref();
+
 const dialogPortJumpRef = ref();
 
 const data = ref();
@@ -289,7 +292,7 @@ const paginationConfig = reactive({
     currentPage: 1,
     pageSize: Number(localStorage.getItem('postgresql-page-size')) || 10,
     total: 0,
-    orderBy: 'created_at',
+    orderBy: 'createdAt',
     order: 'null',
 });
 const searchName = ref();
@@ -347,6 +350,7 @@ const changeDatabase = async () => {
             appKey.value = item.type;
             appName.value = item.database;
             search();
+            appStatusRef.value?.onCheck(appKey.value, appName.value);
             return;
         }
     }

@@ -17,8 +17,9 @@
                     :app-name="appName"
                     v-model:loading="loading"
                     v-model:mask-show="maskShow"
-                    @setting="onSetting"
+                    @setting="onSetting()"
                     @is-exist="checkExist"
+                    ref="appStatusRef"
                 ></AppStatus>
             </template>
             <template #leftToolBar>
@@ -29,7 +30,7 @@
                 >
                     {{ $t('database.create') }}
                 </el-button>
-                <el-button v-if="currentDB" @click="onChangeConn" type="primary" plain>
+                <el-button v-if="currentDB" @click="onChangeConn()" type="primary" plain>
                     {{ $t('database.databaseConnInfo') }}
                 </el-button>
                 <el-button
@@ -40,10 +41,10 @@
                 >
                     {{ $t('database.loadFromRemote') }}
                 </el-button>
-                <el-button @click="goRemoteDB" type="primary" plain>
+                <el-button @click="goRemoteDB()" type="primary" plain>
                     {{ $t('database.remoteDB') }}
                 </el-button>
-                <el-dropdown class="ml-3">
+                <el-dropdown>
                     <el-button type="primary" plain>
                         {{ $t('database.manage') }}
                         <el-icon class="el-icon--right"><arrow-down /></el-icon>
@@ -61,7 +62,7 @@
                 </el-dropdown>
             </template>
             <template #rightToolBar>
-                <el-select v-model="currentDBName" @change="changeDatabase()" class="p-w-200 mr-2.5" v-if="currentDB">
+                <el-select v-model="currentDBName" @change="changeDatabase()" class="p-w-250" v-if="currentDB">
                     <template #prefix>{{ $t('commons.table.type') }}</template>
                     <el-option-group :label="$t('database.local')">
                         <div v-for="(item, index) in dbOptionsLocal" :key="index">
@@ -314,6 +315,8 @@ const dashboardName = ref();
 const dashboardKey = ref();
 const dashboardVisible = ref(false);
 
+const appStatusRef = ref();
+
 const dialogPortJumpRef = ref();
 
 const data = ref();
@@ -322,7 +325,7 @@ const paginationConfig = reactive({
     currentPage: 1,
     pageSize: Number(localStorage.getItem('mysql-page-size')) || 10,
     total: 0,
-    orderBy: 'created_at',
+    orderBy: 'createdAt',
     order: 'null',
 });
 const searchName = ref();
@@ -377,6 +380,7 @@ const changeDatabase = async () => {
             appKey.value = item.type;
             appName.value = item.database;
             search();
+            appStatusRef.value?.onCheck(appKey.value, appName.value);
             return;
         }
     }

@@ -17,13 +17,14 @@
                     @before="onBefore"
                     @after="onAfter"
                     @setting="onSetting"
+                    ref="appStatusRef"
                 ></AppStatus>
             </template>
             <template #leftToolBar v-if="!isOnSetting">
                 <el-button v-if="currentDB" type="primary" plain @click="onLoadConn">
                     {{ $t('database.databaseConnInfo') }}
                 </el-button>
-                <el-button @click="goRemoteDB" type="primary" plain>
+                <el-button @click="goRemoteDB()" type="primary" plain>
                     {{ $t('database.remoteDB') }}
                 </el-button>
             </template>
@@ -164,6 +165,8 @@ const redisIsExist = ref(false);
 const redisStatus = ref();
 const terminalShow = ref(false);
 
+const appStatusRef = ref();
+
 const commandVisible = ref(false);
 
 const redisCliExist = ref();
@@ -225,6 +228,7 @@ const changeDatabase = async () => {
             currentDB.value = item;
             appKey.value = item.type;
             appName.value = item.database;
+            appStatusRef.value?.onCheck(appKey.value, appName.value);
             reOpenTerminal();
             return;
         }
